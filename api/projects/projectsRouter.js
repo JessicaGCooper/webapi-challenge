@@ -89,8 +89,20 @@ router.post('/:id/actions', validateActionsProjectId, validateActionInfo, (req, 
 
 
 //PUT
-router.put('/:id', (req, res) => {
-  
+router.put('/:id', validateProjectId, validateProjectInfo, (req, res) => {
+  const id = req.params.id
+    
+  projectsDB.update(id, req.body)
+    .then(projectUpdate => {
+        res
+        .status(200)
+        .json(projectUpdate)
+    })
+    .catch(error => {
+        res
+        .status(500)
+        .json({ message: "There was an error while modifying the project in the database", error})
+    })
 });
 
 //DELETE
