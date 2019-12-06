@@ -73,20 +73,24 @@ router.post('/', validateProjectInfo, (req, res) => {
 
 //actions post
 router.post('/:id/actions', validateActionsProjectId, validateActionInfo, (req, res) => {
-    
-    actionsDB.insert(req.body)
-    .then(projectInfo => {
+    if (req.body.description.length < 1 || req.body.description.length > 128){
         res
-        .status(201)
-        .json(projectInfo)
-    })
-    .catch(error => {
-        res
-        .status(500)
-        .json({ message: "There was an error while saving the action to the database", error})
-    })
+        .status(400)
+        .json({ message: "The description must be greater than 0 and less than 129 characters long"})
+    } else {
+        actionsDB.insert(req.body)
+        .then(projectInfo => {
+            res
+            .status(201)
+            .json(projectInfo)
+        })
+        .catch(error => {
+            res
+            .status(500)
+            .json({ message: "There was an error while saving the action to the database", error})
+        })
+    }
 });
-
 
 //PUT
 router.put('/:id', validateProjectId, validateProjectInfo, (req, res) => {
