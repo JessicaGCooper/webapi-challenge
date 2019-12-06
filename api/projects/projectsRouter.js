@@ -73,7 +73,12 @@ router.post('/', validateProjectInfo, (req, res) => {
 
 //actions post
 router.post('/:id/actions', validateActionsProjectId, validateActionInfo, (req, res) => {
-    if (req.body.description.length < 1 || req.body.description.length > 128){
+    if (req.body.project_id !== req.params.id){
+      res
+      .status(400)
+      .json({ message: "The project_id must match the project id in the url"})
+    } else if 
+     (req.body.description.length < 1 || req.body.description.length > 128){
         res
         .status(400)
         .json({ message: "The description must be greater than 0 and less than 129 characters long"})
