@@ -26,21 +26,33 @@ router.get('/:id', validateProjectId, (req, res) => {
   const id = req.params.id
 
   projectsDB.get(id)
-  .then(user => {
+  .then(project => {
     res
     .status(200)
-    .json(user)
+    .json(project)
   })
   .catch(error => {
     res
     .status(500)
-    .json({ message: "The server could not retrieve the User from the database", error})
+    .json({ message: "The server could not retrieve the project with the specified ID from the database", error})
   })
 });
 
 //actions get
-router.get('/:id/actions', (req, res) => {
-  
+router.get('/:id/actions', validateActionsProjectId, (req, res) => {
+    const project_id = req.params.id
+
+    projectsDB.getProjectActions(project_id)
+    .then(actions => {
+      res
+      .status(200)
+      .json(actions)
+    })
+    .catch(error => {
+      res
+      .status(500)
+      .json({ message: "The server could not retrieve the Actions List from the database", error})
+    })
 });
 
 //POSTS
@@ -88,6 +100,29 @@ function validateProjectId(req, res, next) {
         res
         .status(500)
         .json({error: 'Server error validating project ID'});
+      })
+  } 
+
+  function validateActionsProjectId(req, res, next) {
+    // do your magic!
+    const project_id = req.params.id;
+    console.log(project_id);
+    projectsDB.get(project_id)
+      .then(project => {
+        if (project) {
+        //   req.project = project;
+          next();
+        } else {
+          res
+          .status(404)
+          .json({error: 'No project with the specified project_id exists.'});
+        }
+      })
+      .catch(error => {
+        console.log(error);
+        res
+        .status(500)
+        .json({error: 'Server error validating project_id.'});
       })
   } 
 
