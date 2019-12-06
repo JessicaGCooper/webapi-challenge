@@ -106,8 +106,29 @@ router.put('/:id', validateProjectId, validateProjectInfo, (req, res) => {
 });
 
 //DELETE
-router.delete('/:id', (req, res) => {
-  
+router.delete('/:id', validateProjectId, (req, res) => {
+  const id = req.params.id
+
+  projectsDB.get(id)
+    .then(project => {
+        projectsDB.remove(id)
+            .then(removedProject => {
+               if(removedProject === 1){ 
+                res
+                .status(200)
+                .json({message: `The project with ID number ${id} has been successfully removed.`, project})
+               } else {
+                 res
+                 .status(406)
+                 .json({ message: "The server returned and incorrect response."})
+               }
+            })
+            .catch(error => {
+                res
+                .status(500)
+                .json({ message: "The server could not successfully delete the project.", error})
+            })
+    });
 });
 
 
