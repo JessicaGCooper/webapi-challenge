@@ -38,7 +38,7 @@ router.get('/:id', validateProjectId, (req, res) => {
   })
 });
 
-//actions get
+//project actions list get
 router.get('/:id/actions', validateActionsProjectId, (req, res) => {
     const project_id = req.params.id
 
@@ -57,8 +57,18 @@ router.get('/:id/actions', validateActionsProjectId, (req, res) => {
 
 //POSTS
 //projects post
-router.post('/', (req, res) => {
-  
+router.post('/', validateProjectInfo, (req, res) => {
+    projectsDB.insert(req.body)
+    .then(projectInfo => {
+        res
+        .status(201)
+        .json(projectInfo)
+    })
+    .catch(error => {
+        res
+        .status(500)
+        .json({ message: "There was an error while saving the project to the database", error})
+    })
 });
 
 //actions post
@@ -81,9 +91,8 @@ router.delete('/:id', (req, res) => {
 //custom middleware
 
 function validateProjectId(req, res, next) {
-    // do your magic!
     const id = req.params.id;
-    console.log(id);
+    
     projectsDB.get(id)
       .then(project => {
         if (project) {
@@ -104,9 +113,8 @@ function validateProjectId(req, res, next) {
   } 
 
   function validateActionsProjectId(req, res, next) {
-    // do your magic!
     const project_id = req.params.id;
-    console.log(project_id);
+    
     projectsDB.get(project_id)
       .then(project => {
         if (project) {
@@ -125,5 +133,17 @@ function validateProjectId(req, res, next) {
         .json({error: 'Server error validating project_id.'});
       })
   } 
+
+function validateProjectInfo(req, res, next){
+    const { name, description, completed } = req.body;
+  
+    if (!name || !description) {
+      res
+        .status(400)
+        .json({ message: "Please provide a name and description for the project." });
+    } else {
+      next();
+    }
+  };
 
   module.exports = router;
