@@ -72,8 +72,19 @@ router.post('/', validateProjectInfo, (req, res) => {
 });
 
 //actions post
-router.post('/:id/actions', (req, res) => {
- 
+router.post('/:id/actions', validateActionsProjectId, validateActionInfo, (req, res) => {
+    
+    actionsDB.insert(req.body)
+    .then(projectInfo => {
+        res
+        .status(201)
+        .json(projectInfo)
+    })
+    .catch(error => {
+        res
+        .status(500)
+        .json({ message: "There was an error while saving the action to the database", error})
+    })
 });
 
 
@@ -118,7 +129,6 @@ function validateProjectId(req, res, next) {
     projectsDB.get(project_id)
       .then(project => {
         if (project) {
-        //   req.project = project;
           next();
         } else {
           res
@@ -141,6 +151,18 @@ function validateProjectInfo(req, res, next){
       res
         .status(400)
         .json({ message: "Please provide a name and description for the project." });
+    } else {
+      next();
+    }
+  };
+
+  function validateActionInfo(req, res, next){
+    const { project_id, description, notes, completed } = req.body;
+  
+    if (!project_id || !description || !notes ) {
+      res
+        .status(400)
+        .json({ message: "Please provide a project_id, description, and notes for the action." });
     } else {
       next();
     }
