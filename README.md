@@ -39,14 +39,19 @@ Commit your code regularly and use descriptive messages. This helps both you (in
 Demonstrate your understanding of this Sprint's concepts by answering the following free-form questions. Edit this document to include your answers after each question. Make sure to leave a blank line above and below your answer so it is clear and easy to read by your Team Lead.
 
 - [ ] Mention two parts of Express that you learned about this week.
+      This week we learned about Express's middleware stack including the methods of express.json(parsing all incoming requests with JSON payloads) and express.Router which we used when setting up all our projects -> express.Router creates a new router object which in turn will create middleware -> a router that uses a particular root url and allows usage of the router.use method to add further middleware and HTTP method routes to the created router object.
 
 - [ ] Describe Middleware?
+      Middleware seems to be a varied term.  In backend we have learned of builtin middleware, third-party middlware (typically functions that produce middleware), and custom middlware.  All of these do the same basic thing -> they intercept the request and perform some action whether logging actions, validating information, adding/changing headers etc. and can either stop the request (and usually return an error) or pass it on to continue running the code.  In express middleware is expected to have the three homies as parameters (res, req, next) and so if additional parameter are required, a regular function which returns middleware must be created.  Pure middleware in express does not need to be invoked.
 
 - [ ] Describe a Resource?
+      In a RESTful API you can think of that you need to manage using your API is a resource, such as data, and each resource is accessible via a unique url.  This can be users, user information, blog posts, anything you might manage.  These resources are managed using the HTTP crud operations.
 
 - [ ] What can the API return to help clients know if a request was successful?
+      An API can return a response status such as 200 to say the request was successful and in addition clients may find whatever resource was being managed by the request to be returned to the client - whether  a list of current data, data created, data deleted, user IDs, etc.
 
 - [ ] How can we partition our application into sub-applications?
+      I'm not entirely sure what this is asking, but based on what we have done this week, I would say that means creating separate folders to contain Models/Databases, Routers, Middleware etc for each category.   Or perhaps you mean dividing out the server and the routers from index.js.  
 
 ## Minimum Viable Product
 
